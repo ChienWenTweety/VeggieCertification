@@ -113,12 +113,11 @@ contract VeggieCertification is Ownable
     /* perform Farm Inspection */
     
     function updateInspectorData(address _batchNo,
-                                    uint256 _arrivalDateTime,
-                                    string _transportInfo,
+                                   string _transportInfo,
                                     uint256 _quantity) 
                                 public isValidPerformer(_batchNo,'GOODS_INSPECTION') returns(bool) {
         /* Call Storage Contract */
-        bool status = veggieCertificationStorage.setInspectorData( _batchNo, _arrivalDateTime, _transportInfo, _quantity);  
+        bool status = veggieCertificationStorage.setInspectorData( _batchNo,  _transportInfo, _quantity);  
         
         emit DoneInspection(msg.sender, _batchNo);
         return (status);
