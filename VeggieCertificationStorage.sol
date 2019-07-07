@@ -5,7 +5,7 @@ import "./VeggieCertificationStorageOwnable.sol";
 contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
     
     address public lastAccess;
-    constructor()  public {
+    constructor()  public payable {
         authorizedCaller[msg.sender] = 1;
         emit AuthorizedCaller(msg.sender);
     }
@@ -235,7 +235,7 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
 
     
     /*set farm Inspector data*/
-    function setInspectorData(address _batchNo,uint256 arrivalDateTime, string _transportInfo, uint256 _quantity) public onlyAuthCaller returns(bool){
+    function setInspectorData(address _batchNo, string _transportInfo, uint256 _quantity) public onlyAuthCaller returns(bool){
         inspectorData.batchNo = _batchNo;
         inspectorData.arrivalDateTime = now;
         inspectorData.transportInfo = _transportInfo;
