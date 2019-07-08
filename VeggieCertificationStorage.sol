@@ -22,6 +22,15 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
         _;
     }
     
+    function check() public onlyAuthCaller view returns(bool){
+        if(lastAccess == msg.sender){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    
     /* User Related */
     struct user {
         string name;
@@ -53,12 +62,10 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
     }
     
     /*User Roles
-        SUPER_ADMIN,
-        FARM_INSPECTION,
-        HARVESTER,
-        EXPORTER,
-        IMPORTER,
-        PROCESSOR
+        RECEIVER,
+        PROCESSOR,
+        WAREHOUSE,
+        OUTOFWAREHOUSE
     */
     
     /* Process Related */
@@ -125,7 +132,7 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
                      string _name, 
                      string _contactNo, 
                      string _role, 
-                     bool _isActive,
+                     bool _isActive ,
                      string _profileHash) public onlyAuthCaller returns(bool){
         
         /*store data into struct*/
@@ -172,23 +179,23 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
                              ) public onlyAuthCaller returns(address) {
         
         uint tmpData = uint(keccak256(msg.sender, now));
-        address batchNo = address (tmpData);
+        address _batchNo = address (tmpData);
         
         basicDetailsData.registrationNo = _registrationNo;
         basicDetailsData.companyName = _companyName;
         basicDetailsData.companyAddress = _companyAddress;
        
         
-        batchBasicDetails[batchNo] = basicDetailsData;
+        batchBasicDetails[_batchNo] = basicDetailsData;
         
-        nextAction[batchNo] = '';   
+        nextAction[_batchNo] = 'RECEIVER';   
         
         
-        return batchNo;
+        return _batchNo;
     }
 
     /*set Importer data*/
-    function setReceiverData(address batchNo,
+    function setReceiverData(address _batchNo,
                               string _transportInfo,
                               uint256 _quantity, 
                               string _shipName,
@@ -204,12 +211,13 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
         receiverData.farmerName = _farmerName;
         receiverData.farmAddress = _farmAddress;
         
-        batchReceiver[batchNo] = receiverData;
+        batchReceiver[_batchNo] = receiverData;
         
-        nextAction[batchNo] = 'PROCESSOR'; 
-        
+        nextAction[_batchNo] = 'PROCESSOR'; 
         return true;
     }
+    
+
     
     /*get Importer data*/
     function getReceiverData(address batchNo) public onlyAuthCaller view returns(string transportInfo,
@@ -266,16 +274,16 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
         
         batchwarehouseManager[_batchNo] = warehouseManagerData;
         
-        nextAction[_batchNo] = 'OUT'; 
+        nextAction[_batchNo] = 'OUTOFWAREHOUSE'; 
         
         return true;
     }
     
     
     /*get Processor data*/
-    function getwarehouseManagerData(address batchNo) public onlyAuthCaller view returns(uint256 stockNumber){
+    function getwarehouseManagerData(address _batchNo) public onlyAuthCaller view returns(uint256 stockNumber){
 
-        WarehouseManager memory tmpData = batchwarehouseManager[batchNo];
+        WarehouseManager memory tmpData = batchwarehouseManager[_batchNo];
         
         
         return (tmpData.stockNumber);
