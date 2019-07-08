@@ -13,9 +13,10 @@ contract VeggieCertification is Ownable
 
   /*Modifier*/
     modifier isValidPerformer(address batchNo, string role) {
+        
     
-        require(keccak256(veggieCertificationStorage.getUserRole(msg.sender)) == keccak256(role));
-        require(keccak256(veggieCertificationStorage.getNextAction(batchNo)) == keccak256(role));
+        require(keccak256('RECEIVER') == keccak256(role),veggieCertificationStorage.getUserRole(msg.sender));
+        require(keccak256(veggieCertificationStorage.getNextAction(batchNo)) == keccak256(role),"qqq");
         _;
     }
 
@@ -33,6 +34,9 @@ contract VeggieCertification is Ownable
        (action) = veggieCertificationStorage.getNextAction(_batchNo);
        return (action);
     }
+    
+
+    
 
      /* get Basic Details */
     
@@ -99,7 +103,9 @@ contract VeggieCertification is Ownable
                                 public isValidPerformer(_batchNo,'RECEIVER') returns(bool) {
                                     
         /* Call Storage Contract */
-        bool status = veggieCertificationStorage.setReceiverData( _batchNo,_transportInfo, _quantity, _shipName, _shipNo, _farmerName, _farmAddress);  
+        
+        bool status = veggieCertificationStorage.setReceiverData( _batchNo,_transportInfo, _quantity, _shipName, _shipNo, _farmerName, _farmAddress);
+        require (status == true, "aaa");
         emit DoneImport(msg.sender, _batchNo);
         return (status);
     }
@@ -115,7 +121,7 @@ contract VeggieCertification is Ownable
     function updateInspectorData(address _batchNo,
                                    string _transportInfo,
                                     uint256 _quantity) 
-                                public isValidPerformer(_batchNo,'GOODS_INSPECTION') returns(bool) {
+                                public isValidPerformer(_batchNo,'PROCESSOR') returns(bool) {
         /* Call Storage Contract */
         bool status = veggieCertificationStorage.setInspectorData( _batchNo,  _transportInfo, _quantity);  
         
@@ -137,7 +143,7 @@ contract VeggieCertification is Ownable
     /* perform Processing */
     
     function updatewarehouseManagerData(address _batchNo,
-                              uint256 _stockNumber) public isValidPerformer(_batchNo,'PROCESSOR') returns(bool) {
+                              uint256 _stockNumber) public isValidPerformer(_batchNo,'WAREHOUSE') returns(bool) {
                                     
         /* Call Storage Contract */
         bool status = veggieCertificationStorage.setwarehouseManagerData(_batchNo, _stockNumber);  
