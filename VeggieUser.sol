@@ -2,18 +2,18 @@ pragma solidity ^0.4.23;
 import "./VeggieCertificationStorage.sol";
 import "./Ownable.sol";
 
-contract SupplyChainUser is Ownable
+contract VeggieUser is Ownable
 {
      /*Events*/ 
     event UserUpdate(address indexed user, string name, string contactNo, string role, bool isActive, string profileHash);
     event UserRoleUpdate(address indexed user, string role); 
     
      /* Storage Variables */    
-    SupplyChainStorage supplyChainStorage;
+    VeggieCertificationStorage veggieCertificationStorage;
     
-    constructor(address _supplyChainAddress) public {
-        supplyChainStorage = SupplyChainStorage(_supplyChainAddress);
-    }
+     constructor(address _veggieAddress) public {
+        veggieCertificationStorage = VeggieCertificationStorage(_veggieAddress);
+    }   
     
     
      /* Create/Update User */
@@ -23,7 +23,7 @@ contract SupplyChainUser is Ownable
         require(msg.sender != address(0));
         
         /* Call Storage Contract */
-        bool status = supplyChainStorage.setUser(msg.sender, _name, _contactNo, _role, _isActive,_profileHash);
+        bool status = veggieCertificationStorage.setUser(msg.sender, _name, _contactNo, _role, _isActive,_profileHash);
         
          /*call event*/
         emit UserUpdate(msg.sender,_name,_contactNo,_role,_isActive,_profileHash);
@@ -38,7 +38,7 @@ contract SupplyChainUser is Ownable
         require(_userAddress != address(0));
         
         /* Call Storage Contract */
-        bool status = supplyChainStorage.setUser(_userAddress, _name, _contactNo, _role, _isActive, _profileHash);
+        bool status = veggieCertificationStorage.setUser(_userAddress, _name, _contactNo, _role, _isActive, _profileHash);
         
          /*call event*/
         emit UserUpdate(_userAddress,_name,_contactNo,_role,_isActive,_profileHash);
@@ -52,7 +52,7 @@ contract SupplyChainUser is Ownable
         require(_userAddress != address(0));
         
         /*Getting value from struct*/
-       (name, contactNo, role, isActive, profileHash) = supplyChainStorage.getUser(_userAddress);
+       (name, contactNo, role, isActive, profileHash) = veggieCertificationStorage.getUser(_userAddress);
        
        return (name, contactNo, role, isActive, profileHash);
     }
