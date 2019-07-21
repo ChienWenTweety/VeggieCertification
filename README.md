@@ -1,5 +1,5 @@
 1. Deploy veggiestorage contract
-2. copy address of deployed veggiestorage 
+2. Copy address of deployed veggiestorage 
 3. Deploy user contract with veggietorage address
 4. Deploy veggiecertification contract with veggiestorage address 
 5. Click veggiestorage contract
