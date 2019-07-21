@@ -57,7 +57,8 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
     /* User Roles: RECEIVER,
                    INSPECTOR,
                    WAREHOUSE,
-                   OUTOFWAREHOUSE
+                   SHIPPING,
+                   SALE
     */
     
     /* Process Related */
@@ -107,6 +108,25 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
         uint256 bQuantity3;
     }
     
+    struct ShippingMan {
+        address batchNo; 
+        string shipName; 
+        string shipNumber; 
+        string shipType; 
+        uint256 quantity; 
+        string shippingAddress;
+    }
+    
+    struct SalesMan {
+        address batchNo; 
+        string  companyName;
+        string  companyAddress;
+        uint256 quantity;
+        address salesman;
+    }
+    
+    
+    
     mapping (address => basicDetails) batchBasicDetails;
     mapping (address => Receiver) batchReceiver;
     mapping (address => Inspector) batchInspector;
@@ -114,7 +134,8 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
     mapping (address => Carrier) batchCarrier;
     mapping (address => string) nextAction;
     mapping (address => NewBatchDetails) newBatchDetails;
-    
+    mapping (address => ShippingMan) batchShippingMan;
+    mapping (address => SalesMan) batchSalesMan;
     /*Initialize struct pointer*/
     user userDetail;
     basicDetails basicDetailsData;
@@ -123,6 +144,8 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
     WarehouseManager warehouseManagerData;
     Carrier carrier;
     NewBatchDetails newBatchData;
+    ShippingMan shippingManData;
+    SalesMan    salesManData;
      
     /* Get User Role */
     function getUserRole(address _userAddress) public onlyAuthCaller view returns(string) {
@@ -301,5 +324,95 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
         newBatchDetails[_newBatchNo] = newBatchData;
         return _newBatchNo;
     }
+    
+     function getNewBatchNo(address batchNo) public onlyAuthCaller view returns(address batchNo1, 
+                                                                                address batchNo2, 
+                                                                                address batchNo3,
+                                                                                uint256 bQuantity1,
+                                                                                uint256 bQuantity2,
+                                                                                uint256 bQuantity3) {
+                                                                                        
+        
+        NewBatchDetails memory tmpData = newBatchDetails[batchNo];
+        
+        
+        return (tmpData.batchNo1,
+                tmpData.batchNo2,
+                tmpData.batchNo3,
+                tmpData.bQuantity1, 
+                tmpData.bQuantity2, 
+                tmpData.bQuantity3);
+    }
+    
+    
+    function setShippingData(address _newbatchNo,
+                             string _shipName, 
+                             string _shipNumber, 
+                             string _shipType, 
+                             uint256 _quantity, 
+                             string _shippingAddress) public onlyAuthCaller returns(bool) {
+                             
+        shippingManData.shipName = _shipName;
+        shippingManData.shipNumber = _shipNumber;
+        shippingManData.shipType = _shipType;
+        shippingManData.quantity = _quantity;
+        shippingManData.shippingAddress = _shippingAddress;
+        
+        batchShippingMan[_newbatchNo] = shippingManData;
+        nextAction[_newbatchNo] = 'SALES'; 
+        return true;
+    }
+    
+    /*get Importer data*/
+    function getShippingData(address batchNo) public onlyAuthCaller view returns(string shipName, 
+                                                                                 string shipNumber, 
+                                                                                 string shipType, 
+                                                                                 uint256 quantity, 
+                                                                                 string shippingAddress) {
+                                                                                        
+        
+        ShippingMan memory tmpData = batchShippingMan[batchNo];
+        
+        
+        return (tmpData.shipName,
+                tmpData.shipNumber, 
+                tmpData.shipType, 
+                tmpData.quantity, 
+                tmpData.shippingAddress);
+    }
+    
+    
+     function setSalesData(address  _newbatchNo,
+                            string  _companyName,
+                             string  _companyAddress,
+                             uint256 _quantity,
+                             address _salesman) public onlyAuthCaller returns(bool) {
+                             
+        salesManData.companyName = _companyName;
+        salesManData.companyAddress = _companyAddress;
+        salesManData.quantity = _quantity;
+        salesManData.salesman = _salesman;
+        
+        batchSalesMan[_newbatchNo] = salesManData;
+        nextAction[_newbatchNo] = 'END'; 
+        return true;
+    }
+    
+    /*get Importer data*/
+    function getSalesData(address newbatchNo) public onlyAuthCaller view returns(string  companyName,
+                                                                              string  companyAddress,
+                                                                              uint256 quantity,
+                                                                              address salesman) {
+                                                                                        
+        
+        SalesMan memory tmpData = batchSalesMan[newbatchNo];
+        
+        
+        return (tmpData.companyName,
+                tmpData.companyAddress, 
+                tmpData.quantity, 
+                tmpData.salesman);
+    }
+
   
 } 
