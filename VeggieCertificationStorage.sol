@@ -5,6 +5,7 @@ import "./VeggieCertificationStorageOwnable.sol";
 contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
     
     address public lastAccess;
+    
     constructor()  public {
         authorizedCaller[msg.sender] = 1;
         emit AuthorizedCaller(msg.sender);
@@ -49,13 +50,7 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
         return true;
     }
     
-    /* User Roles: RECEIVER,
-                   INSPECTOR,
-                   WAREHOUSE,
-                   OUTOFWAREHOUSE,
-                   SHIPPING,
-                   SALE
-    */
+    /* User Roles: RECEIVER, INSPECTOR, WAREHOUSE, SALES, SHIPPING */
     
     /* Process Related */
     struct basicDetails {
@@ -129,7 +124,6 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
     }
     
     
-    
     mapping (address => basicDetails) batchBasicDetails;
     mapping (address => Receiver) batchReceiver;
     mapping (address => Inspector) batchInspector;
@@ -154,7 +148,6 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
     Shipping shippingData;
     CustomerReturn CustomerReturnData;
     
-     
     /* Get User Role */
     function getUserRole(address _userAddress) public onlyAuthCaller view returns(string) {
         return userRole[_userAddress];
@@ -167,10 +160,10 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
         
     /*set user details*/
     function setUser(address _userAddress,
-                     string _name, 
-                     string _contactNo, 
-                     string _role, 
-                     bool _isActive) public onlyAuthCaller returns(bool) {
+                     string  _name, 
+                     string  _contactNo, 
+                     string  _role, 
+                     bool    _isActive) public onlyAuthCaller returns(bool) {
         
         /*store data into struct*/
         userDetail.name = _name;
@@ -187,10 +180,10 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
     
     /*get user details*/
     function getUser(address userAddress) public onlyAuthCaller view returns(string name, 
-                                                                              string contactNo, 
-                                                                              string role,
-                                                                              bool isActive, 
-                                                                              string profileHash) {
+                                                                             string contactNo, 
+                                                                             string role,
+                                                                             bool   isActive, 
+                                                                             string profileHash) {
 
         /*Getting value from struct*/
         user memory tmpData = userDetails[userAddress];
@@ -217,8 +210,8 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
     
     /*get batch basicDetails*/
     function getBasicDetails(address batchNo) public onlyAuthCaller view returns(string registrationNo,
-                                                                                  string companyName,
-                                                                                  string companyAddress) {
+                                                                                 string companyName,
+                                                                                 string companyAddress) {
         
         basicDetails memory tmpData = batchBasicDetails[batchNo];
         
@@ -227,12 +220,12 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
     
     /*set Receiver data*/
     function setReceiverData(address _batchNo,
-                             string _transportInfo,
+                             string  _transportInfo,
                              uint256 _quantity, 
-                             string _shipName,
-                             string _shipNo,
-                             string _farmerName,
-                             string _farmAddress) public onlyAuthCaller returns(bool) {
+                             string  _shipName,
+                             string  _shipNo,
+                             string  _farmerName,
+                             string  _farmAddress) public onlyAuthCaller returns(bool) {
                              
         receiverData.transportInfo = _transportInfo;
         receiverData.quantity = _quantity;
@@ -248,13 +241,13 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
     }
     
     /*get Receiver data*/
-    function getReceiverData(address batchNo) public onlyAuthCaller view returns(string transportInfo,
+    function getReceiverData(address batchNo) public onlyAuthCaller view returns(string  transportInfo,
                                                                                  uint256 quantity,
-                                                                                 string shipName,
-                                                                                 string shipNo,
+                                                                                 string  shipName,
+                                                                                 string  shipNo,
                                                                                  uint256 arrivalDateTime,
-                                                                                 string farmerName,
-                                                                                 string farmAddress) {
+                                                                                 string  farmerName,
+                                                                                 string  farmAddress) {
                                                                                         
         
         Receiver memory tmpData = batchReceiver[batchNo];
@@ -270,7 +263,7 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
 
     /*set Inspector data*/
     function setInspectorData(address _batchNo, 
-                              string _transportInfo,
+                              string  _transportInfo,
                               uint256 _quantity) public onlyAuthCaller returns(bool) {
         
         inspectorData.batchNo = _batchNo;
@@ -301,8 +294,8 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
         return true;
     }
     
-    function getReturnData(address batchNo) public onlyAuthCaller view returns (uint256 _quantity,
-                                                                                string  _memo) {
+    function getReturnData(address batchNo) public onlyAuthCaller view returns (uint256 quantity,
+                                                                                string  memo) {
         
         Return memory tmpData = batchReturn[batchNo];
         
@@ -348,16 +341,15 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
         return true;
     }
     
-    function getSalesData(address batchNo) public onlyAuthCaller view returns(string  _customerOrderNo,
+    function getSalesData(address batchNo) public onlyAuthCaller view returns(string  customerOrderNo,
                                                                               uint256 quantity,
-                                                                              string  _goodInfo,
+                                                                              string  goodInfo,
                                                                               string  companyName,
                                                                               string  companyAddress,
                                                                               address salesman) {
                                                                                         
         
         Sales memory tmpData = batchSales[batchNo];
-        
         
         return (tmpData.customerOrderNo,
                 tmpData.quantity,
@@ -413,10 +405,10 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
     
     function setShippingData(address _newBatchNo,
                              uint256 _quantity,
-                             string _shipName, 
-                             string _shipNo, 
-                             string _shipType, 
-                             string _shippingAddress) public onlyAuthCaller returns(bool) {
+                             string  _shipName, 
+                             string  _shipNo, 
+                             string  _shipType, 
+                             string  _shippingAddress) public onlyAuthCaller returns(bool) {
                              
         shippingData.shipName = _shipName;
         shippingData.quantity = _quantity;
@@ -430,10 +422,10 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
     }
   
     function getShippingData(address newBatchNo) public onlyAuthCaller view returns(uint256 quantity,
-                                                                                    string shipName,
-                                                                                    string shipNumber, 
-                                                                                    string shipType, 
-                                                                                    string shippingAddress) {
+                                                                                    string  shipName,
+                                                                                    string  shipNumber, 
+                                                                                    string  shipType, 
+                                                                                    string  shippingAddress) {
                                                                                         
         
         Shipping memory tmpData = batchShipping[newBatchNo];
@@ -456,8 +448,8 @@ contract VeggieCertificationStorage is VeggieCertificationStorageOwnable {
         return true;
     }
     
-    function getCustomerReturnData(address newBatchNo) public onlyAuthCaller view returns (uint256 _quantity,
-                                                                                           string  _memo) {
+    function getCustomerReturnData(address newBatchNo) public onlyAuthCaller view returns (uint256 quantity,
+                                                                                           string  memo) {
         
         CustomerReturn memory tmpData = batchCustomerReturn[newBatchNo];
         
