@@ -26,36 +26,15 @@ contract VeggieCertification is Ownable {
 
     constructor(address _veggieAddress) public {
         veggieCertificationStorage = VeggieCertificationStorage(_veggieAddress);
-    }   
-    
-    /* Add New User */
-    /*function addUser(address _userAddress,
-                     string _name, 
-                     string _contactNo, 
-                     string _role, 
-                     bool _isActive) public onlyOwner returns(bool) {
-    
-        bool status = veggieCertificationStorage.setUser(_userAddress,
-                                                         _name, 
-                                                         _contactNo, 
-                                                         _role, 
-                                                         _isActive);
-        
-        //emit DONEAddUser(msg.sender, );//
-        
-        return (status);
     }
-    */   
     
     /* Get Next Action */    
-
     function getNextAction(address _batchNo) public view returns(string action) {
         (action) = veggieCertificationStorage.getNextAction(_batchNo);
         return (action);
     }
     
     /* Get Basic Details */
-    
     function getBasicDetails(address _batchNo) public view returns(string registrationNo,
                                                                    string companyName,
                                                                    string companyAddress) {
@@ -65,7 +44,6 @@ contract VeggieCertification is Ownable {
     }
 
     /* Generate Batch Number */
-    
     function addBasicDetails(string _registrationNo,
                              string _companyName,
                              string _companyAddress) public onlyOwner returns(address) {
@@ -73,20 +51,19 @@ contract VeggieCertification is Ownable {
         address batchNo = veggieCertificationStorage.setBasicDetails(_registrationNo,
                                                                      _companyName,
                                                                      _companyAddress);
-        
+    
         emit DonePurchase(msg.sender, batchNo); 
         return (batchNo);
     }
 
     /* shipName: Name of Logistics company, shipNo:Car license Number */
-    
-    function getReceiverData(address _batchNo) public view returns(string transportInfo,
+    function getReceiverData(address _batchNo) public view returns(string  transportInfo,
                                                                    uint256 quantity,
-                                                                   string shipName,
-                                                                   string shipNo,
+                                                                   string  shipName,
+                                                                   string  shipNo,
                                                                    uint256 arrivalDateTime,
-                                                                   string farmerName,
-                                                                   string farmAddress) {
+                                                                   string  farmerName,
+                                                                   string  farmAddress) {
                                                                     
         /* Call Storage Contract */
         (transportInfo,
@@ -95,31 +72,28 @@ contract VeggieCertification is Ownable {
          shipNo,
          arrivalDateTime,
          farmerName,
-         farmAddress) =  veggieCertificationStorage.getReceiverData(_batchNo);  
+         farmAddress) = veggieCertificationStorage.getReceiverData(_batchNo);  
          
-         return (transportInfo,
-                 quantity,
-                 shipName,
-                 shipNo,
-                 arrivalDateTime,
-                 farmerName,
-                 farmAddress);
-        
+        return (transportInfo,
+                quantity,
+                shipName,
+                shipNo,
+                arrivalDateTime,
+                farmerName,
+                farmAddress);
     }
     
     /* Perform Receiving */
-    
     function updateReceiverData(address _batchNo,
-                                string _transportInfo,
+                                string  _transportInfo,
                                 uint256 _quantity, 
-                                string _shipName,
-                                string _shipNo,
-                                string _farmerName,
-                                string _farmAddress)
+                                string  _shipName,
+                                string  _shipNo,
+                                string  _farmerName,
+                                string  _farmAddress)
                                 public isValidPerformer(_batchNo, 'RECEIVER') returns(bool) {
                                     
         /* Call Storage Contract */
-        
         bool status = veggieCertificationStorage.setReceiverData(_batchNo,
                                                                  _transportInfo, 
                                                                  _quantity, 
@@ -139,9 +113,8 @@ contract VeggieCertification is Ownable {
     }
     
     /* Perform Inspection */
-    
     function updateInspectorData(address _batchNo,
-                                 string _transportInfo,
+                                 string  _transportInfo,
                                  uint256 _quantity) public isValidPerformer(_batchNo, 'INSPECTOR') returns(bool) {
         /* Call Storage Contract */
         bool status = veggieCertificationStorage.setInspectorData(_batchNo,  
@@ -152,13 +125,13 @@ contract VeggieCertification is Ownable {
         return (status);
     }
     
-    function getReturnData(address _batchNo) public view returns(uint256 _quantity,
-                                                                 string  _memo) {
+    function getReturnData(address _batchNo) public view returns(uint256 quantity,
+                                                                 string  memo) {
         
-        (_quantity,
-         _memo) = veggieCertificationStorage.getReturnData(_batchNo);  
+        (quantity,
+         memo) = veggieCertificationStorage.getReturnData(_batchNo);  
         
-        return (_quantity, _memo);
+        return (quantity, memo);
     }
     
     function returnGoods(address _batchNo,
@@ -174,7 +147,6 @@ contract VeggieCertification is Ownable {
     }
     
     /* Get Warehouse-In Data */
-    
     function getWarehouseInData(address _batchNo) public view returns(uint256 stockNumber) {
         
         /* Call Storage Contract */
@@ -183,7 +155,6 @@ contract VeggieCertification is Ownable {
     }
     
     /* Perform Warehousing */
-    
     function updateWarehouseInData(address _batchNo,
                                    uint256 _stockNumber) public isValidPerformer(_batchNo, 'WAREHOUSE') returns(bool) {
                                     
@@ -194,19 +165,19 @@ contract VeggieCertification is Ownable {
         return (status);
     }
 
-    function getSalesData(address batchNo) public view returns (string  customerOrderNo,
-                                                                uint256 quantity,
-                                                                string  goodInfo,
-                                                                string  companyName,
-                                                                string  companyAddress,
-                                                                address salesman) {
+    function getSalesData(address _batchNo) public view returns (string  customerOrderNo,
+                                                                 uint256 quantity,
+                                                                 string  goodInfo,
+                                                                 string  companyName,
+                                                                 string  companyAddress,
+                                                                 address salesman) {
         /* Call Storage Contract */
         (customerOrderNo,
          quantity,
          goodInfo,
          companyName,
          companyAddress,
-         salesman) = veggieCertificationStorage.getSalesData(batchNo);  
+         salesman) = veggieCertificationStorage.getSalesData(_batchNo);  
         
         return (customerOrderNo,
                 quantity,
@@ -217,19 +188,18 @@ contract VeggieCertification is Ownable {
     }
     
     /* Perform Sales */
-    
-    function updateSalesData(address batchNo,
-                             string  customerOrderNo,
-                             uint256 quantity,
-                             string  goodInfo,
-                             string  companyName,
-                             string  companyAddress,
-                             address salesman) public isValidPerformer(batchNo, 'SALES') returns(bool) {
+    function updateSalesData(address _batchNo,
+                             string  _customerOrderNo,
+                             uint256 _quantity,
+                             string  _goodInfo,
+                             string  _companyName,
+                             string  _companyAddress,
+                             address _salesman) public isValidPerformer(_batchNo, 'SALES') returns(bool) {
                                     
         /* Call Storage Contract */
-        bool status = veggieCertificationStorage.setSalesData(batchNo, customerOrderNo, quantity, goodInfo, companyName, companyAddress, salesman);  
+        bool status = veggieCertificationStorage.setSalesData(_batchNo, _customerOrderNo, _quantity, _goodInfo, _companyName, _companyAddress, _salesman);  
         
-        emit DoneSales(msg.sender, batchNo);
+        emit DoneSales(msg.sender, _batchNo);
         return (status);
     }
 
@@ -242,7 +212,6 @@ contract VeggieCertification is Ownable {
                                                                       uint256 bQuantity3) {
          
         /* Call Storage Contract */
-        
         (customerOrderNo,
          batchNo1, 
          batchNo2, 
@@ -261,7 +230,6 @@ contract VeggieCertification is Ownable {
     }
     
     /* Generate New Batch Number */
-    
     function addNewBatch(string  _customerOrderNo,
                          address _batchNo1, 
                          address _batchNo2, 
@@ -283,18 +251,17 @@ contract VeggieCertification is Ownable {
     }
     
     function getShippingData(address _newBatchNo) public view returns(uint256 quantity,
-                                                                      string shipName, 
-                                                                      string shipNumber, 
-                                                                      string shipType, 
-                                                                      string shippingAddress) {
+                                                                      string  shipName, 
+                                                                      string  shipNumber, 
+                                                                      string  shipType, 
+                                                                      string  shippingAddress) {
          
         /* Call Storage Contract */
-        
         (quantity,
          shipName, 
          shipNumber, 
          shipType, 
-         shippingAddress) =  veggieCertificationStorage.getShippingData(_newBatchNo);  
+         shippingAddress) = veggieCertificationStorage.getShippingData(_newBatchNo);  
          
         return (quantity,
                 shipName, 
@@ -304,18 +271,17 @@ contract VeggieCertification is Ownable {
     }
     
     /* Perform Shipping */
-    
-    function updateShippingData(address newBatchNo,
-                                uint256 quantity,
-                                string shipName, 
-                                string shipNumber, 
-                                string shipType, 
-                                string shippingAddress) public isValidPerformer(newBatchNo, 'SHIPPING') returns(bool) {
+    function updateShippingData(address _newBatchNo,
+                                uint256 _quantity,
+                                string  _shipName, 
+                                string  _shipNumber, 
+                                string  _shipType, 
+                                string  _shippingAddress) public isValidPerformer(_newBatchNo, 'SHIPPING') returns(bool) {
                                     
         /* Call Storage Contract */
-        bool status = veggieCertificationStorage.setShippingData(newBatchNo, quantity, shipName, shipNumber, shipType,  shippingAddress);  
+        bool status = veggieCertificationStorage.setShippingData(_newBatchNo, _quantity, _shipName, _shipNumber, _shipType, _shippingAddress);  
         
-        emit DoneShipping(msg.sender, newBatchNo);
+        emit DoneShipping(msg.sender, _newBatchNo);
         return (status);
     }
     /*
@@ -328,15 +294,15 @@ contract VeggieCertification is Ownable {
         return (quantity, memo);
     }
     
-    function returnGoodsFromCustomers(address newBatchNo,
-                                      uint256 quantity,
-                                      string  memo) public isValidPerformer(newBatchNo, 'SALES') returns(bool) {
+    function returnGoodsFromCustomers(address _newBatchNo,
+                                      uint256 _quantity,
+                                      string  _memo) public isValidPerformer(_newBatchNo, 'SALES') returns(bool) {
         
-        bool status = veggieCertificationStorage.setCustomerReturnData(newBatchNo,  
-                                                                       quantity,
-                                                                       memo);
+        bool status = veggieCertificationStorage.setCustomerReturnData(_newBatchNo,  
+                                                                       _quantity,
+                                                                       _memo);
                                                                
-        emit DoneReturnFromCustomers(msg.sender, newBatchNo);
+        emit DoneReturnFromCustomers(msg.sender, _newBatchNo);
         return (status);                     
     }
     */
