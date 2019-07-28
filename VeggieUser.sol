@@ -16,7 +16,6 @@ contract VeggieUser is Ownable {
         veggieCertificationStorage = VeggieCertificationStorage(_veggieAddress);
     }   
     
-    
     /* Create/Update User */
     function updateUser(string _name, string _contactNo, string _role, bool _isActive) public returns(bool) {
         
@@ -48,13 +47,13 @@ contract VeggieUser is Ownable {
     }
     
     /* get User */
-    function getUser(address _userAddress) public view returns(string name, string contactNo, string role, bool isActive, string profileHash) {
+    function getUser(address _userAddress) public view returns(string name, string contactNo, string role, bool isActive) {
         
         require(_userAddress != address(0));
         
         /*Getting value from struct*/
-       (name, contactNo, role, isActive, profileHash) = veggieCertificationStorage.getUser(_userAddress);
+       (name, contactNo, role, isActive) = veggieCertificationStorage.getUser(_userAddress);
        
-       return (name, contactNo, role, isActive, profileHash);
+       return (name, contactNo, role, isActive);
     }
 }
